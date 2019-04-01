@@ -12,6 +12,9 @@ Vue.component('app-header', {
           <li class="nav-item active">
             <router-link class="nav-link" to="/">Home <span class="sr-only">(current)</span></router-link>
           </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/upload">Upload</router-link>
+          </li>
         </ul>
       </div>
     </nav>
@@ -40,6 +43,73 @@ const Home = Vue.component('home', {
     }
 });
 
+const uploadForm = Vue.component('upload-form', {
+    template: `
+    <div>
+    <h1> Upload Form</h1>
+    <div class="alert alert-primary" role="alert" v-if="message">
+      Upload was successful
+    </div>
+    <div class="alert alert-danger" role="alert" v-if="error">
+      <ul>
+        <li v-for="err in errors">{{err}}</li>
+      </ul>
+    </div>
+    <form id="uploadForm" method=post enctype=multipart/form-data @submit.prevent="uploadPhoto">
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea class="form-control" name="description" id="description"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="photo">Photo Upload</label></br>
+        <input type="file" name=photo id="photo" >
+    </div>
+    <button type=submit class="btn btn-primary" > Upload </button>
+    </form>
+    </div>
+    `,
+    data: function(){
+        return {
+            message: false,
+            error: false,
+            errors: []
+        };
+    },
+    methods: {
+        uploadPhoto(){
+            let uploadForm = document.getElementById('uploadForm');
+            let form_data = new FormData(uploadForm); 
+            let self = this;
+        /* global fetch*/    
+        fetch("/api/upload", {
+            method: 'POST',
+            body: form_data,
+            headers: {
+                'X-CSRFToken': token
+            },
+            credentials: 'same-origin'
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (jsonResponse) {
+                if (jsonResponse.errors){
+                    self.errors = jsonResponse.errors;
+                    self.error = true;
+                    self.message = false;
+                }   
+                else{
+                    self.message = true;
+                    self.error = false;
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+    }
+});
+
 const NotFound = Vue.component('not-found', {
     template: `
     <div>
@@ -57,7 +127,7 @@ const router = new VueRouter({
     routes: [
         {path: "/", component: Home},
         // Put other routes here
-
+        {path: "/upload", component: uploadForm},
         // This is a catch all route in case none of the above matches
         {path: "*", component: NotFound}
     ]
