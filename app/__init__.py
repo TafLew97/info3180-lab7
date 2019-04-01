@@ -6,3 +6,5 @@ app.config['SECRET_KEY'] = 'v\xf9\xf7\x11\x13\x18\xfaMYp\xed_\xe8\xc9w\x06\x8e\x
 app.config['UPLOAD_FOLDER'] = './app/static/uploads'
 csrf = CSRFProtect(app)
 from app import views
+
+#lab7

@@ -9,9 +9,9 @@ from app import app
 from flask import render_template, request, jsonify
 from app.forms import UploadForm
 from werkzeug.utils import secure_filename
-###
+### lab 7
 # Routing for your application.
-###
+### 
 @app.route('/api/upload', methods=('POST',))
 def upload():
     form = UploadForm()
