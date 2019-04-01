@@ -85,6 +85,7 @@ const uploadForm = Vue.component('upload-form', {
             method: 'POST',
             body: form_data,
             headers: {
+                /* global token*/
                 'X-CSRFToken': token
             },
             credentials: 'same-origin'
